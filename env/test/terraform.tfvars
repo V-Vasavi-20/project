@@ -102,6 +102,32 @@ iam_policies = {
 
     ]
   }
+  ############################################
+  # Fluent Bit CloudWatch Logs Policy
+  ############################################
+
+  fluent_bit_cloudwatch = {
+
+    description = "Fluent Bit permissions to write Kubernetes application logs to CloudWatch"
+
+    statements = [
+
+      {
+        sid = "CloudWatchLogs"
+
+        actions = [
+          "logs:CreateLogStream",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents"
+        ]
+
+        resources = [
+          "arn:aws:logs:ap-south-1:179897609830:log-group:/aws/containerinsights/speshway-test-eks/application:*"
+        ]
+      }
+
+    ]  
+  }
   ###########################################
   # AWS LB controller
   ############################################
@@ -364,7 +390,7 @@ eks_node_groups = {
 
     max_size = 2
 
-    desired_size = 1
+    desired_size = 2
 
     disk_size = 50
 
@@ -474,6 +500,20 @@ eks_irsa_roles = {
 
       "external_dns"
 
+    ]
+
+  }
+  ############################################
+  # Fluent Bit
+  ############################################
+  fluent-bit = {
+
+    namespace = "amazon-cloudwatch"
+
+    service_account = "fluent-bit"
+
+    policy_names = [
+      "fluent_bit_cloudwatch"
     ]
 
   }
@@ -707,3 +747,12 @@ enable_detailed_monitoring = false
 # Cloudwatch
 # =========================================================
 monitoring_alert_email = "ntharun@speshway.com"
+############################################
+# Fluent Bit
+############################################
+
+fluent_bit_helm_repository = "https://aws.github.io/eks-charts"
+
+fluent_bit_chart_name = "aws-for-fluent-bit"
+
+fluent_bit_chart_version = "0.1.35"

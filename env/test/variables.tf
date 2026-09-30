@@ -745,3 +745,36 @@ variable "monitoring_alert_email" {
   description = "Email address for CloudWatch monitoring alerts"
   type        = string
 }
+############################################
+# Fluent Bit
+############################################
+
+variable "fluent_bit_helm_repository" {
+
+  description = "Fluent Bit Helm repository"
+
+  type = string
+
+  default = "https://aws.github.io/eks-charts"
+
+}
+
+variable "fluent_bit_chart_name" {
+
+  description = "Fluent Bit Helm chart"
+
+  type = string
+
+  default = "aws-for-fluent-bit"
+
+}
+
+variable "fluent_bit_chart_version" {
+
+  description = "Fluent Bit Helm chart version"
+
+  type = string
+
+  default = null
+
+}

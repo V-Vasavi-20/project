@@ -29,7 +29,28 @@ dnf install -y \
   wget \
   rsync \
   util-linux
+# ============================================================
+# INSTALL KUBECTL
+# ============================================================
 
+KUBECTL_VERSION="$(curl -L -s https://dl.k8s.io/release/stable.txt)"
+
+curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+
+install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+rm -f kubectl
+
+kubectl version --client
+
+# ============================================================
+# INSTALL HELM
+# ============================================================
+
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
+  | bash
+
+helm version
 
 # ============================================================
 # JAVA CHECK

@@ -712,3 +712,70 @@ module "cloudwatch" {
     ])
   )
 }
+############################################
+# Fluent Bit
+############################################
+
+module "fluent_bit" {
+
+  source = "../../modules/monitoring/fluent-bit"
+  providers = {
+    helm = helm
+  }
+  ##########################################
+  # Project
+  ##########################################
+
+  project_name = var.project_name
+
+  environment = var.environment
+
+  common_tags = var.common_tags
+
+  ##########################################
+  # AWS
+  ##########################################
+
+  region = var.region
+
+  ##########################################
+  # EKS
+  ##########################################
+
+  cluster_name = module.eks.cluster_name
+
+  irsa_role_arn = module.eks.irsa_role_arns[
+    "fluent-bit"
+  ]
+
+  ##########################################
+  # Kubernetes
+  ##########################################
+
+  namespace = "amazon-cloudwatch"
+
+  service_account_name = "fluent-bit"
+
+  ##########################################
+  # CloudWatch
+  ##########################################
+
+  log_group_name = "/aws/containerinsights/${module.eks.cluster_name}/application"
+
+  log_retention_days = 30
+
+  ##########################################
+  # Helm
+  ##########################################
+
+  helm_repository = var.fluent_bit_helm_repository
+
+  chart_name = var.fluent_bit_chart_name
+
+  chart_version = var.fluent_bit_chart_version
+
+  depends_on = [
+    module.eks
+  ]
+
+}
