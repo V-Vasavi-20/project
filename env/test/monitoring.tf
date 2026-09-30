@@ -12,11 +12,14 @@ data "aws_lb" "ingress" {
 
 module "cloudwatch" {
   source = "../../modules/monitoring/cloudwatch"
-
+  
+  project_name = var.project_name
   environment = "test"
 
   alert_email = var.monitoring_alert_email
 
+  application_log_group_name = module.fluent_bit.log_group_name
+  
   alarms = merge(
 
     # ============================================================
@@ -210,6 +213,35 @@ module "cloudwatch" {
         }
 
         treat_missing_data = "missing"
+      }
+    },
+    # ============================================================
+    # APPLICATION LOGS
+    # Fluent Bit -> CloudWatch Logs
+    # ============================================================
+
+    {
+      application_errors = {
+
+        alarm_name = "test-application-errors"
+
+        alarm_description = "Application ERROR logs detected in EKS workloads"
+
+        namespace = "${var.project_name}/${var.environment}"
+
+        metric_name = "ApplicationErrors"
+
+        statistic = "Sum"
+
+        period = 300
+
+        evaluation_periods = 1
+
+        comparison_operator = "GreaterThanOrEqualToThreshold"
+
+        threshold = 5
+
+        treat_missing_data = "notBreaching"
       }
     },
 
