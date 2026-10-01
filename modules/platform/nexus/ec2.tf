@@ -17,6 +17,10 @@ resource "aws_instance" "nexus" {
     encrypted             = true
     delete_on_termination = true
   }
-
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
   tags = local.nexus_tags
 }

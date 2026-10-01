@@ -74,15 +74,15 @@ module "sonarqube" {
   alb_security_group_id = module.shared_alb.security_group_id
 }
 module "shared_alb" {
-   source = "../../modules/platform/shared-alb"
+  source = "../../modules/platform/shared-alb"
 
-   project_name = var.project_name
-   environment  = var.environment
-   aws_region   = var.region
+  project_name = var.project_name
+  environment  = var.environment
+  aws_region   = var.region
 
-vpc_id = module.networking.vpc_id
-    
-   public_subnet_ids = module.networking.public_subnet_ids
+  vpc_id = module.networking.vpc_id
 
-common_tags = var.common_tags
-     }
+  public_subnet_ids = module.networking.public_subnet_ids
+
+  common_tags = var.common_tags
+}

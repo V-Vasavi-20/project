@@ -126,7 +126,54 @@ resource "aws_lb_target_group_attachment" "sonarqube" {
   target_id        = data.aws_instance.sonarqube.id
   port             = var.sonarqube_port
 }
+# ============================================================
+# GRAFANA TARGET GROUP
+# ============================================================
+resource "aws_lb_target_group" "grafana" {
 
+  name = "${var.project_name}-${var.environment}-grafana"
+
+  port = var.grafana_port
+
+  protocol = "HTTP"
+
+  vpc_id = var.vpc_id
+
+  target_type = "instance"
+
+  health_check {
+    enabled = true
+
+    protocol = "HTTP"
+
+    path = "/api/health"
+
+    port = "traffic-port"
+
+    healthy_threshold = 3
+
+    unhealthy_threshold = 3
+
+    timeout = 5
+
+    interval = 30
+  }
+
+  tags = merge(
+    local.alb_tags,
+    {
+      Service = "Grafana"
+    }
+  )
+}
+resource "aws_lb_target_group_attachment" "grafana" {
+
+  target_group_arn = aws_lb_target_group.grafana.arn
+
+  target_id = data.aws_instance.grafana.id
+
+  port = var.grafana_port
+}
 
 # ============================================================
 # JENKINS LISTENER
@@ -175,5 +222,23 @@ resource "aws_lb_listener" "sonarqube" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.sonarqube.arn
+  }
+}
+# ============================================================
+# GRAFANA LISTENER
+
+resource "aws_lb_listener" "grafana" {
+
+  load_balancer_arn = aws_lb.shared.arn
+
+  port = var.grafana_port
+
+  protocol = "HTTP"
+
+  default_action {
+
+    type = "forward"
+
+    target_group_arn = aws_lb_target_group.grafana.arn
   }
 }

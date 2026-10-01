@@ -126,7 +126,7 @@ iam_policies = {
         ]
       }
 
-    ]  
+    ]
   }
   ###########################################
   # AWS LB controller
@@ -304,6 +304,20 @@ iam_roles = {
 
     create_instance_profile = true
   }
+  monitoring = {
+    name = "speshway-test-monitoring-role"
+
+    trusted_services = [
+      "ec2.amazonaws.com"
+    ]
+
+    managed_policy_arns = [
+      "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+      "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
+    ]
+
+    create_instance_profile = true
+  }
 }
 ############################################
 # KMS
@@ -359,7 +373,7 @@ kms_keys = {
 ############################################
 
 ecr_repositories = {
-  images={}
+  images = {}
 }
 ############################################
 # EKS
@@ -371,7 +385,7 @@ endpoint_private_access = true
 
 endpoint_public_access = true
 
-public_access_cidrs = ["13.214.171.49/32"]
+public_access_cidrs = ["13.214.140.224/32"]
 
 
 eks_node_groups = {
@@ -438,7 +452,17 @@ eks_access_entries = {
     }
     type = "STANDARD"
   }
+  monitoring = {
+    principal_arn = "arn:aws:iam::179897609830:role/speshway-test-monitoring-role"
 
+    policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+    access_scope = {
+      type       = "cluster"
+      namespaces = []
+    }
+    type = "STANDARD"
+  }
   eks_user = {
     principal_arn = "arn:aws:iam::179897609830:user/eks-user"
 
@@ -579,12 +603,35 @@ addons = {
 
     chart = "cert-manager"
 
-    values = {
+    set = {
 
       installCRDs = true
 
     }
 
+  }
+  kube-state-metrics = {
+    type       = "helm"
+    namespace  = "monitoring"
+    repository = "https://prometheus-community.github.io/helm-charts"
+    chart      = "kube-state-metrics"
+    values = {
+    service = {
+      type     = "NodePort"
+      nodePort = 30080
+    }
+  }
+  }
+  node-exporter = {
+    type       = "helm"
+    namespace  = "monitoring"
+    repository = "https://prometheus-community.github.io/helm-charts"
+    chart      = "prometheus-node-exporter"
+
+    set = {
+      "service.port" = 9100
+
+    }
   }
 
   external-dns = {
@@ -755,4 +802,16 @@ fluent_bit_helm_repository = "https://aws.github.io/eks-charts"
 
 fluent_bit_chart_name = "aws-for-fluent-bit"
 
-fluent_bit_chart_version = "0.1.35"
+ifluent_bit_chart_version = "0.1.35"
+# =========================================================
+# prometheus
+# =========================================================
+
+prometheus_instance_type = "t3.medium"
+
+prometheus_root_volume_size = 20
+
+prometheus_data_volume_size = 100
+
+prometheus_data_volume_type = "gp3"
+

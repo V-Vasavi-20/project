@@ -421,7 +421,7 @@ variable "launch_templates" {
     encrypted = optional(bool, true)
 
     additional_security_group_ids = optional(list(string), [])
-    user_data = optional(string, null)
+    user_data                     = optional(string, null)
 
   }))
 
@@ -721,7 +721,29 @@ variable "sonarqube_data_volumes" {
     device_name = string
   }))
 }
+variable "prometheus_instance_type" {
+  description = "EC2 instance type for Prometheus and Grafana"
+  type        = string
+  default     = "t3.medium"
+}
 
+variable "prometheus_root_volume_size" {
+  description = "Root volume size for monitoring EC2"
+  type        = number
+  default     = 40
+}
+
+variable "prometheus_data_volume_size" {
+  description = "Persistent monitoring data volume size"
+  type        = number
+  default     = 40
+}
+
+variable "prometheus_data_volume_type" {
+  description = "Monitoring data EBS volume type"
+  type        = string
+  default     = "gp3"
+}
 # =========================================================
 # Monitoring
 # =========================================================

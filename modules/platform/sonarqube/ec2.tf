@@ -63,6 +63,10 @@ resource "aws_instance" "sonarqube" {
     encrypted             = true
     delete_on_termination = true
   }
-
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
   tags = local.sonarqube_tags
 }

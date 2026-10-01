@@ -46,7 +46,17 @@ resource "aws_vpc_security_group_ingress_rule" "sonarqube" {
 
   description = "Allow internet traffic to SonarQube"
 }
+# Grafana - ALB listener 3000
+resource "aws_vpc_security_group_ingress_rule" "grafana" {
 
+  security_group_id = aws_security_group.shared_alb.id
+  cidr_ipv4 = "0.0.0.0/0"
+  from_port = var.grafana_port
+  to_port = var.grafana_port
+  ip_protocol = "tcp"
+
+  description = "Allow Grafana traffic"
+}
 # ALB outbound
 resource "aws_vpc_security_group_egress_rule" "outbound" {
   security_group_id = aws_security_group.shared_alb.id

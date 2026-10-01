@@ -45,3 +45,9 @@ variable "common_tags" {
   description = "Common resource tags"
   type        = map(string)
 }
+variable "grafana_port" {
+  description = "Grafana application port"
+  type        = number
+  default     = 3000
+}
+

@@ -15,6 +15,11 @@ resource "aws_instance" "jenkins" {
     encrypted             = true
     delete_on_termination = true
   }
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
 
   tags = local.jenkins_tags
 }

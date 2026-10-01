@@ -36,3 +36,9 @@ output "sonarqube_target_group_arn" {
   description = "SonarQube target group ARN"
   value       = aws_lb_target_group.sonarqube.arn
 }
+output "grafana_target_group_arn" {
+
+  description = "Grafana target group ARN"
+
+  value = aws_lb_target_group.grafana.arn
+}

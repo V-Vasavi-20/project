@@ -12,14 +12,14 @@ data "aws_lb" "ingress" {
 
 module "cloudwatch" {
   source = "../../modules/monitoring/cloudwatch"
-  
+
   project_name = var.project_name
-  environment = "test"
+  environment  = "test"
 
   alert_email = var.monitoring_alert_email
 
   application_log_group_name = module.fluent_bit.log_group_name
-  
+
   alarms = merge(
 
     # ============================================================
@@ -810,4 +810,31 @@ module "fluent_bit" {
     module.eks
   ]
 
+}
+
+module "prometheus" {
+  source = "../../modules/monitoring/prometheus"
+
+  project_name = var.project_name
+  environment  = var.environment
+  aws_region   = var.region
+
+  vpc_id            = module.networking.vpc_id
+  private_subnet_id = module.networking.private_subnet_ids[0]
+
+  iam_instance_profile_name = module.iam.instance_profile_names["monitoring"]
+
+  prometheus_instance_type = var.prometheus_instance_type
+
+  root_volume_size = var.prometheus_root_volume_size
+
+  data_volume_size = var.prometheus_data_volume_size
+
+  data_volume_type = var.prometheus_data_volume_type
+
+  enable_detailed_monitoring = var.enable_detailed_monitoring
+
+  common_tags = var.common_tags
+
+  alb_security_group_id = module.shared_alb.security_group_id
 }

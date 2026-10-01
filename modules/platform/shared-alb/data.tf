@@ -13,3 +13,8 @@ data "aws_instance" "nexus" {
 data "aws_instance" "sonarqube" {
   instance_id = "i-0cecd07e484a41ef1"
 }
+
+data "aws_instance" "grafana" {
+  instance_id = "i-035b6e1029c0c4865"
+}
+
