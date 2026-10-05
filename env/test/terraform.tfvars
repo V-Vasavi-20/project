@@ -404,7 +404,7 @@ eks_node_groups = {
 
     max_size = 2
 
-    desired_size = 2
+    desired_size = 1
 
     disk_size = 50
 
